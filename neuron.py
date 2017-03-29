@@ -1,6 +1,7 @@
+import random
 """
 https://ftims.edu.p.lodz.pl/pluginfile.php/78898/mod_resource/content/2/zad_01_DELTA_en.pdf
-It solves following 1 task which generally is:
+It solves following 1st task which generally is:
     Write a program which implements a single linear neuron trained with the delta rule
 with the use of (a) single and (b) multiple training patterns.
 """
@@ -16,24 +17,66 @@ class Neuron(object):
         :param kwargs:
         """
         self.weights = []
-        super(self, Neuron).__init__(*args, **kwargs)
+        super(Neuron, self).__init__(*args, **kwargs)
 
 
-    def initialize_weights(self, weights_count, weights_range):
+    def initialize_weights(self, weights_range_lower, weights_range_upper, no):
         """
         Initialize weights with random values as mentioned in task description
-        :param weights_count:
-        :param weights_range:
+        :param weights_range_lower:
+        :param weights_range_upper:
+        :param no: number of inputs
         :return:
         """
+        for i in xrange(0, no):
+            self.weights.append(
+                random.uniform(
+                    weights_range_lower,
+                    weights_range_upper
+                )
+            )
 
+    def get_output(self, inputs):
+        """
+        Calculate Neuron output
+        :param inputs:
+        :return:
+        """
+        sum = 0.0
+        for i, input in enumerate(inputs):
+            sum += input * self.weights[i]
 
-    def train(self, training_set):
+        return sum
+
+    def train(
+            self,
+            training_set,
+            epochs=10000,
+            step=0.01,
+            w_lower=1,
+            w_upper=2,
+    ):
         """
         Train the neuron
         :param training_set:
-        list of int values - single pattern
-        list of list which contains int values - multiple pattern
+        tuple - single pattern
+        ([input1, input2, ..., inputN], Z - expected neuron output)
+        or list of tuples above for multiple patterns
+        :param training_set:
+        :param epochs:
+        :param step:
+        :param w_lower:
+        :param w_upper:
         :return:
         """
-        pass
+        if isinstance(training_set, tuple):
+            training_set = [training_set]
+        self.initialize_weights(w_lower, w_upper, len(training_set[0][0]))
+        for k in xrange(epochs):
+            for training_input in training_set:
+                neuron_out = self.get_output(training_input[0])  # 0-inputs
+
+                for i, weight in enumerate(self.weights):
+                    delta = training_input[1] - neuron_out # 1-expected out
+                    # modifying weight
+                    self.weights[i] += step * delta
