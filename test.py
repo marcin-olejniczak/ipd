@@ -6,7 +6,7 @@ from neuron import Neuron
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_EPOCHS = 10000
-DEFAULT_STEP = 0.01
+DEFAULT_STEP = 0.001
 TEST_FILE = CURRENT_DIR + '/samples/zad1/test.txt'
 TRAIN_FILE = CURRENT_DIR + '/samples/zad1/train.txt'
 
@@ -30,7 +30,7 @@ def get_data_from_file(file_path):
     """
     data = []
     for line in open(file_path):
-        data += [(ord(ch) / 10.0) for ch in line]
+        data += [float(ch) for ch in line.rstrip()]
     return data
 
 epochs = 1000
@@ -77,12 +77,12 @@ test_data = get_data_from_file(test_file_path)
 
 neuron = Neuron()
 
-train_pattern = (
-    train_pattern, 1,
-    train_pattern1, 1,
-    train_pattern2, 1,
-    train_pattern3, 1,
-)
+train_pattern = [
+    (train_pattern, 1),
+    (train_pattern1, 2),
+    (train_pattern2, 3),
+    (train_pattern3, 4),
+]
 
 neuron.train(
     train_pattern, epochs, step

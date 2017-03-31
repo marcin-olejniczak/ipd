@@ -33,7 +33,7 @@ class Neuron(object):
                 random.uniform(
                     weights_range_lower,
                     weights_range_upper
-                )
+                ) / 10.0
             )
 
     def get_output(self, inputs):
@@ -50,7 +50,7 @@ class Neuron(object):
 
     def train(
             self,
-            training_set,
+            training_sets,
             epochs=10000,
             step=0.01,
             w_lower=1,
@@ -69,14 +69,16 @@ class Neuron(object):
         :param w_upper:
         :return:
         """
-        if isinstance(training_set, tuple):
-            training_set = [training_set]
-        self.initialize_weights(w_lower, w_upper, len(training_set[0][0]))
+        if isinstance(training_sets, tuple):
+            training_sets = [training_sets]
+        self.initialize_weights(w_lower, w_upper, len(training_sets[0][0]))
         for k in xrange(epochs):
-            for training_input in training_set:
-                neuron_out = self.get_output(training_input[0])  # 0-inputs
+            for training_input in training_sets:
+                neuron_inputs = training_input[0]
+                expected_out = training_input[1]
+                neuron_out = self.get_output(neuron_inputs)
 
                 for i, weight in enumerate(self.weights):
-                    delta = training_input[1] - neuron_out # 1-expected out
+                    delta = expected_out - neuron_out
                     # modifying weight
-                    self.weights[i] += step * delta
+                    self.weights[i] += step * delta * neuron_inputs[i]
