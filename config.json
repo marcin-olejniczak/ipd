@@ -1,0 +1,12 @@
+{
+    "epochs": "100000",
+    "train_paths": [
+        "/samples/zad1/train.txt",
+        "/samples/zad1/train1.txt",
+        "/samples/zad1/train2.txt",
+        "/samples/zad1/train3.txt"
+    ], 
+    "step": "0.001",
+    "test_paths": ["/samples/zad1/test.txt"],
+    "train_targets": ["1", "2", "3", "4"]
+}
