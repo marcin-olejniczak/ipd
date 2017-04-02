@@ -17,6 +17,7 @@ class Neuron(object):
         :param args:
         :param kwargs:
         """
+        self.epochs = 0
         self.weights = []
         super(Neuron, self).__init__(*args, **kwargs)
 
@@ -52,7 +53,7 @@ class Neuron(object):
     def train(
             self,
             training_sets,
-            epochs=10000,
+            max_delta=0.001,
             step=0.01,
             w_lower=1,
             w_upper=2,
@@ -63,7 +64,7 @@ class Neuron(object):
         tuple - single pattern
         ([input1, input2, ..., inputN], Z - expected neuron output)
         or list of tuples above for multiple patterns
-        :param training_set:
+        :param training_sets:
         :param epochs:
         :param step:
         :param w_lower:
@@ -73,13 +74,17 @@ class Neuron(object):
         if isinstance(training_sets, tuple):
             training_sets = [training_sets]
         self.initialize_weights(w_lower, w_upper, len(training_sets[0][0]))
-        for k in xrange(epochs):
+        not_enough_prec = True
+        while not_enough_prec:
+            self.epochs += 1
             for training_input in training_sets:
                 neuron_inputs = training_input[0]
                 expected_out = training_input[1]
                 neuron_out = self.get_output(neuron_inputs)
+                delta = expected_out - neuron_out
+                if abs(delta) < max_delta:
+                    not_enough_prec = False
 
                 for i, weight in enumerate(self.weights):
-                    delta = expected_out - neuron_out
                     # modifying weight
                     self.weights[i] += step * delta * neuron_inputs[i]

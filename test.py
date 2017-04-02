@@ -11,7 +11,7 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_EPOCHS = 10000
 DEFAULT_STEP = 0.001
 
-def log(epochs, result, weights, step):
+def log(epochs, result, weights, step, precision):
     """
     TODO: Move that function outside this file
     :param epochs:
@@ -21,7 +21,8 @@ def log(epochs, result, weights, step):
     :return:
     """
     print '\nepochs {0}, result {1}, \n' \
-          'step {2},\nweights {3}'.format(epochs, result, step, weights)
+          'step {2}, \nprecision {3}, \nweights {4}'.format(
+        epochs, result, step, precision, weights,)
 
 def get_data_from_file(file_path):
     """
@@ -69,7 +70,7 @@ def neuron_training(neuron, train_pattern, epochs, step):
 with open('config.json') as data_file:
     config = json.load(data_file)
 
-epochs = int(config['epochs'])
+max_delta = float(config['max_delta'])
 step = float(config['step'])
 
 neuron = Neuron()
@@ -79,10 +80,10 @@ for i, train_file_path  in enumerate(config['train_paths']):
         (get_data_from_file(train_file_path), float(config['train_targets'][i])),
     )
 
-neuron_training(neuron, train_pattern, epochs, step)
+neuron_training(neuron, train_pattern, max_delta, step)
 
 for i, file_path  in enumerate(config['test_paths']):
     test_data = get_data_from_file(file_path)
 
     output = neuron_response(neuron, test_data)
-    log(epochs, output, neuron.weights, step)
+    log(neuron.epochs, output, neuron.weights, step, max_delta)

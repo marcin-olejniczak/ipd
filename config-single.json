@@ -1,0 +1,9 @@
+{
+    "max_delta": "0.000000000001",
+    "train_paths": [
+        "/samples/zad1/train.txt"
+    ],
+    "train_targets": ["1"],
+    "step": "0.001",
+    "test_paths": ["/samples/zad1/test.txt"]
+}
