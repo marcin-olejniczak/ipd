@@ -2,6 +2,7 @@
 import getopt
 import json
 import os
+import time
 import sys
 
 from neuron import Neuron
@@ -33,6 +34,38 @@ def get_data_from_file(file_path):
         data += [float(ch) for ch in line.rstrip()]
     return data
 
+def timing(f):
+    def wrap(*args):
+        time1 = time.time()
+        ret = f(*args)
+        time2 = time.time()
+        print '%s function took %0.3f ms' % (f.func_name, (time2-time1)*1000.0)
+        return ret
+    return wrap
+
+@timing
+def neuron_response(neuron, test_data):
+    """
+    Measure neuron response time
+    :param neuron:
+    :param test_data:
+    :return:
+    """
+    return neuron.get_output(test_data)
+
+@timing
+def neuron_training(neuron, train_pattern, epochs, step):
+    """
+    Measure neuron training time
+    :param neuron:
+    :param epochs:
+    :param step:
+    :return:
+    """
+    neuron.train(
+        train_pattern, epochs, step
+    )
+
 with open('config.json') as data_file:
     config = json.load(data_file)
 
@@ -46,12 +79,10 @@ for i, train_file_path  in enumerate(config['train_paths']):
         (get_data_from_file(train_file_path), float(config['train_targets'][i])),
     )
 
-neuron.train(
-    train_pattern, epochs, step
-)
+neuron_training(neuron, train_pattern, epochs, step)
 
 for i, file_path  in enumerate(config['test_paths']):
     test_data = get_data_from_file(file_path)
 
-    output = neuron.get_output(test_data)
+    output = neuron_response(neuron, test_data)
     log(epochs, output, neuron.weights, step)

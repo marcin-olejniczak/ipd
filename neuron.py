@@ -5,6 +5,7 @@ It solves following 1st task which generally is:
     Write a program which implements a single linear neuron trained with the delta rule
 with the use of (a) single and (b) multiple training patterns.
 """
+
 class Neuron(object):
     """
     Class implements neuron using delta rule for both
@@ -33,7 +34,7 @@ class Neuron(object):
                 random.uniform(
                     weights_range_lower,
                     weights_range_upper
-                ) / 10.0
+                )
             )
 
     def get_output(self, inputs):
